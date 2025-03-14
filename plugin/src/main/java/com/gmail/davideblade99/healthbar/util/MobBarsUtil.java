@@ -118,28 +118,31 @@ public final class MobBarsUtil {
                 barArray[20] = "§a██████████";
                 break;
             default:
-                // Default (1 or anything else)
-                barArray[0] = "§c▌                   ";
-                barArray[1] = "§c▌                   ";
-                barArray[2] = "§c█                  ";
-                barArray[3] = "§c█▌                 ";
-                barArray[4] = "§c██                ";
-                barArray[5] = "§e██▌               ";
-                barArray[6] = "§e███              ";
-                barArray[7] = "§e███▌             ";
-                barArray[8] = "§e████            ";
-                barArray[9] = "§e████▌           ";
-                barArray[10] = "§e█████          ";
-                barArray[11] = "§a█████▌         ";
-                barArray[12] = "§a██████        ";
-                barArray[13] = "§a██████▌       ";
-                barArray[14] = "§a███████      ";
-                barArray[15] = "§a███████▌     ";
-                barArray[16] = "§a████████    ";
-                barArray[17] = "§a████████▌   ";
-                barArray[18] = "§a█████████  ";
-                barArray[19] = "§a█████████▌ ";
-                barArray[20] = "§a██████████";
+                final String SPACES = "\uf802";
+                final String frame = "\uE024";
+
+                final String FULL = "\uE025";
+                final String EMPTY = "\uE026";
+                for (int i = 2; i <= 22; i++) {
+                    double current = (((double) (i - 2) / 20) * 16);
+                    int percentage = 16 / 3;
+                    String color;
+                    if (current > percentage * 2 && current <= 16.0) {
+                        color = Utils.translateColorCodes("&#00FF00");
+                    }
+                    else if (current >= percentage && current <= percentage * 2) {
+                        color = Utils.translateColorCodes("&#FFFF00");
+                    }
+                    else {
+                        color = Utils.translateColorCodes("&#FF0000");
+                    }
+
+                    String salid = color + printMM(16.0, current, FULL, EMPTY, SPACES);
+                    salid = frame + SPACES.repeat(38) + salid;
+                    barArray[i - 2] = salid;
+
+                    System.out.println(i - 2 + ": " + current);
+                }
                 break;
         }
 
@@ -166,5 +169,38 @@ public final class MobBarsUtil {
         }
 
         return barArray;
+    }
+
+    private static String printMM(final double maxDamage, final double currentDamage, final String FULL, final String EMPTY, final String SPACES) {
+        if (FULL == null || EMPTY == null || SPACES == null) {
+            return null;
+        }
+        final String s = getStringBars(FULL, SPACES, currentDamage);
+        return getStringMM(maxDamage, currentDamage, EMPTY, SPACES, s);
+    }
+
+    private static String getStringMM(final double maxDamage, final double currentDamage, final String EMPTY, final String SPACES, String s) {
+        double total = maxDamage - currentDamage;
+        if (total % 2.0 != 0.0) {
+            double sub = total % 2;
+
+            total = total - sub;
+        }
+
+        StringBuilder sBuilder = new StringBuilder(s);
+        for (int i = 0; i < total / 2.0; ++i) {
+            sBuilder.append(EMPTY).append(SPACES);
+        }
+        s = sBuilder.toString();
+        return s;
+    }
+
+
+    private static String getStringBars(final String FULL, final String SPACES, final double aux) {
+        StringBuilder sal = new StringBuilder();
+        for (int i = 0; i < aux / 2.0; ++i) {
+            sal.append(FULL).append(SPACES);
+        }
+        return sal.toString();
     }
 }

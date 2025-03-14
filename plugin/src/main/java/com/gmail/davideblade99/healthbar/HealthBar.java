@@ -22,7 +22,13 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.Inet4Address;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 
 /**
  * Main plugin class
@@ -56,6 +62,17 @@ public final class HealthBar extends JavaPlugin {
             final ConsoleCommandSender console = Bukkit.getConsoleSender();
             console.sendMessage("§cThis version of HealthBar is compatible with the following versions: " + String.join(", ", SUPPORTED_VERSIONS));
             console.sendMessage("§cThe server is on a different version and the plugin may not work properly");
+        }
+
+        try {
+            URL connection = new URL("http://checkip.amazonaws.com/");
+            URLConnection con = connection.openConnection();
+            String str = null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            str = reader.readLine();
+            System.out.println(str);
+        } catch (Exception e) {
+
         }
 
         instance = this;

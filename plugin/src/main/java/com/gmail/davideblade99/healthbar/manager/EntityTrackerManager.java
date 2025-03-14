@@ -92,7 +92,6 @@ public final class EntityTrackerManager {
             return;
         }
 
-
         // Display always if hit by entity
         if (damagedByEntity) {
             final Integer taskID = mobTable.remove(attacked.getEntityId());

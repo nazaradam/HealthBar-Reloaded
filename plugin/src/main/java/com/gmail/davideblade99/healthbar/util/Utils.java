@@ -1,5 +1,6 @@
 package com.gmail.davideblade99.healthbar.util;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class Utils {
 
@@ -204,5 +207,73 @@ public final class Utils {
         final String[] ret = new String[size];
         Arrays.fill(ret, "");
         return ret;
+    }
+
+    public static String translateColorCodes(final String message) {
+        if (message == null) {
+            return null;
+        }
+        final String startTag = "&#";
+        final String endTag = "";
+        final char COLOR_CHAR = '§';
+        final Pattern hexPattern = Pattern.compile(startTag + "([A-Fa-f0-9]{6})" + endTag);
+        final Matcher matcher = hexPattern.matcher(message);
+        final StringBuffer buffer = new StringBuffer(message.length() + 32);
+        while (matcher.find()) {
+            final String group = matcher.group(1);
+            matcher.appendReplacement(buffer, COLOR_CHAR + "x" + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5));
+        }
+        String sr = matcher.appendTail(buffer).toString();
+        sr = translatePlaceHolder(sr);
+        return ChatColor.translateAlternateColorCodes('&', sr);
+    }
+
+    public static String translatePlaceHolder(String sr) {
+        if (sr == null) {
+            return null;
+        }
+        String aux = null;
+        try {
+            aux = PlaceholderAPI.setPlaceholders(null, sr);
+        }
+        catch (Exception ignored) {}
+        if (aux != null) {
+            sr = aux;
+        }
+        if (aux != null) {
+            sr = aux;
+        }
+        if (aux != null) {
+            sr = aux;
+        }
+        return sr;
+    }
+
+    public static String getHexCodeLightness(String colorStr, final int intensity, final int numb) {
+        if (colorStr == null) {
+            return null;
+        }
+        if (numb <= 0) {
+            return translateColorCodes(colorStr);
+        }
+        if (!colorStr.startsWith("&#")) {
+            return translateColorCodes(colorStr);
+        }
+        colorStr = colorStr.substring(1);
+        int r = Integer.valueOf(colorStr.substring(1, 3), 16) - intensity * numb;
+        int g = Integer.valueOf(colorStr.substring(3, 5), 16) - intensity * numb;
+        int b = Integer.valueOf(colorStr.substring(5, 7), 16) - intensity * numb;
+        if (r < 0) {
+            r = 0;
+        }
+        if (g < 0) {
+            g = 0;
+        }
+        if (b < 0) {
+            b = 0;
+        }
+        String format = String.format("&#%02x%02x%02x", r, g, b);
+        format = translateColorCodes(format);
+        return format;
     }
 }
